@@ -49,11 +49,11 @@ let
 
   # Playwright expects different directory names for different architectures:
   # - linux-x64 expects: chrome-linux64
-  # - linux-arm64 expects: chrome-linux
+  # - linux-arm64 expects: chrome-linux-arm64
   chromeDir =
     {
       x86_64-linux = "chrome-linux64";
-      aarch64-linux = "chrome-linux";
+      aarch64-linux = "chrome-linux-arm64";
     }
     .${system} or throwSystem;
 
@@ -63,8 +63,8 @@ let
       inherit (download) url stripRoot;
       hash =
         {
-          x86_64-linux = "sha256-3/o8ZFVeL/YDuO+aax+qcm6xv77AX6Vl6meP+S05cTk=";
-          aarch64-linux = "sha256-53xm/L3QYH22AZ8K/5cKg1gLewKv7s3lTDmXlHw4KDg=";
+          x86_64-linux = "sha256-ktGPsC2JiQp7cSmZAMU91/cii5vurBLf4CNgfM5BJtE=";
+          aarch64-linux = "sha256-awvDm4aFRud/XzSeAuxONCclwzw8t+BZ8uCOFtWUEQw=";
         }
         .${system} or throwSystem;
     };
@@ -130,7 +130,7 @@ let
     inherit (download) url stripRoot;
     hash =
       {
-        aarch64-darwin = "sha256-ugo4gRST53YA1uaLXfwnFhFdouShtUAGFnf2ZKbg5jI=";
+        aarch64-darwin = "sha256-utaf65JcLlAXmXCxChPWi5YxbYQA77IYvgFNgW1ALtQ=";
       }
       .${system} or throwSystem;
   };

@@ -1,8 +1,9 @@
 {
   buildNpmPackage,
   copyDesktopItems,
-  electron_43,
+  electron_44,
   fetchFromGitHub,
+  gitMinimal,
   lib,
   makeDesktopItem,
   nix-update-script,
@@ -15,20 +16,20 @@
   cargo,
 }:
 let
-  electron = electron_43;
+  electron = electron_44;
   nodejs = nodejs_22;
 in
-buildNpmPackage rec {
+buildNpmPackage (finalAttrs: {
   pname = "super-productivity";
-  version = "18.21.2";
+  version = "19.3.1";
 
   inherit nodejs;
 
   src = fetchFromGitHub {
     owner = "super-productivity";
     repo = "super-productivity";
-    tag = "v${version}";
-    hash = "sha256-q95UwzY1G2FxxHrg6eWxGD/C4iy/nbSMzRUMCfunL3s=";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-RlDpD+dfJiMjXlbVq1hW16eyt+S/IFGiJvoce6ZWAEM=";
   };
 
   # Use custom fetcher for deps because super-productivity uses multiple
@@ -38,7 +39,7 @@ buildNpmPackage rec {
   npmDeps = stdenv.mkDerivation (
     lib.fetchers.normalizeHash { } {
       pname = "super-productivity-deps";
-      inherit version src;
+      inherit (finalAttrs) version src;
 
       nativeBuildInputs = [
         prefetch-npm-deps
@@ -74,7 +75,7 @@ buildNpmPackage rec {
       dontInstall = true;
 
       outputHashMode = "recursive";
-      hash = "sha256-mKsIhYGYqI5iStaT/G+UssnbJjdwol2xXpno+oZ1Sek=";
+      hash = "sha256-q0mj8EJ2RE/i6u5FjT/Fm+7GyMLnF2FqIxsfKQO2SNU=";
     }
   );
 
@@ -83,7 +84,7 @@ buildNpmPackage rec {
 
   cargoRoot = "electron/wayland-idle-helper";
   cargoDeps = rustPlatform.fetchCargoVendor {
-    inherit
+    inherit (finalAttrs)
       pname
       version
       src
@@ -95,9 +96,15 @@ buildNpmPackage rec {
   env = {
     ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
     CHROMEDRIVER_SKIP_DOWNLOAD = "true";
+    # Use JavaScript Sass implementation instead bundled Dart executable.
+    NG_BUILD_SASS_EMBEDDED = "false";
   };
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+  nativeBuildInputs = [
+    # Required by the build-time tests.
+    gitMinimal
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     cargo
     copyDesktopItems
     rustPlatform.cargoSetupHook
@@ -211,4 +218,4 @@ buildNpmPackage rec {
     ];
     mainProgram = "superproductivity";
   };
-}
+})

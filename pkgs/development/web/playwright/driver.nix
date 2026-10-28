@@ -19,13 +19,13 @@ let
   throwSystem = throw "Unsupported system: ${system}";
   browsersJSON = (lib.importJSON ./browsers.json).browsers;
 
-  version = "1.62.1";
+  version = "1.64.1";
 
   src = fetchFromGitHub {
     owner = "Microsoft";
     repo = "playwright";
     rev = "v${version}";
-    hash = "sha256-3gLXo9bd2qXCy8MYMbnYU6AXIWrqoitqMBPMF4g07nY=";
+    hash = "sha256-oWpJTU3Sob674bLfz0gfHK+vqOoYhK1wmYmVKhsPitM=";
   };
 
   playwright = buildNpmPackage {
@@ -33,7 +33,7 @@ let
     inherit version src;
 
     sourceRoot = "${src.name}"; # update.sh depends on sourceRoot presence
-    npmDepsHash = "sha256-iebe0sP3VMdk1vBFDkwM1L4x2VrHPZF/NbjMeU5diWM=";
+    npmDepsHash = "sha256-a1MGKwKKHYEECsUa4kUlutMMJ8QSeTptBmUPSheIcUg=";
 
     nativeBuildInputs = [
       cacert
